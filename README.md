@@ -49,13 +49,12 @@ predefined allocation percentages.
 
 Example:
 
-  Asset   Allocation
-  ------- ------------
-  PETR4   30%
-  VALE3   25%
-  ITUB4   20%
-  BBDC4   15%
-  WEGE3   10%
+| Asset | Allocation |
+| PETR4 | 30% |
+| VALE3 | 25% |
+| ITUB4 | 20% |
+| BBDC4 | 15% |
+| WEGE3 | 10% |
 
 ------------------------------------------------------------------------
 
@@ -180,9 +179,6 @@ Benefits:
 ### Solution Structure
 
 src
-
-```
-
 ├ Domain
 │ ├ Entities
 │ ├ ValueObjects
@@ -216,7 +212,6 @@ src
 │ └ CalculateTaxes
 │
 └ Scheduled.Stock.Purchase.Api
-```
 
 ------------------------------------------------------------------------
 
