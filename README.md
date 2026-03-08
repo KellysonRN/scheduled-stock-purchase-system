@@ -370,7 +370,7 @@ Responsibilities:
 
 # Technology Stack
 
--   .NET 8
+-   .NET 10
 -   Minimal API
 -   Vertical Slice Architecture
 -   Apache Kafka
