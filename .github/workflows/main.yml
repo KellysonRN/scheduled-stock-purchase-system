@@ -1,0 +1,46 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**/src/**'
+      - '**/tests/**'      
+      - '**/.github/**'
+  pull_request:
+    branches: [ main ]
+
+  workflow_dispatch:
+    
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v6
+      with:
+          fetch-depth: 0
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v5
+      with:
+        dotnet-version: 10.0.x
+
+    - name: Restore Dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --configuration Release --no-restore      
+
+    - name: Tests   
+      run: dotnet test --configuration Release --no-build --verbosity normal --results-directory "test-results" --collect:"Code Coverage"
+    
+    - run: dotnet tool update --global dotnet-coverage
+    - run: dotnet-coverage merge --output test-result.cobertura.xml --output-format cobertura "test-results/**/*.coverage"
+    - run: dotnet tool install --global dotnet-reportgenerator-globaltool
+    - run: reportgenerator -reports:test-result.cobertura.xml -targetdir:coverage-report -reporttypes:"MarkdownSummaryGithub"
+    - run: cat coverage-report/SummaryGithub.md >> $GITHUB_STEP_SUMMARY   
+        
