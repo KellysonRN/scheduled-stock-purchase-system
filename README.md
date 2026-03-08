@@ -277,6 +277,7 @@ CalculateTaxes
 - configure database
 - configure Kafka
 - create slice structure
+- setup github action
 
 ### Phase 2 -- Domain Modeling
 
