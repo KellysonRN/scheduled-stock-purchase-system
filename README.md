@@ -397,6 +397,15 @@ Responsibilities:
 
 ------------------------------------------------------------------------
 
+Create a `.env` file based on `.env.example`
+
+MYSQL_ROOT_PASSWORD=your_password_here
+MYSQL_DATABASE=your_database_here
+MYSQL_USER=your_username_here
+MYSQL_PASSWORD=your_password_here
+
+------------------------------------------------------------------------
+
 ## Conclusion
 
 This solution prioritizes:
