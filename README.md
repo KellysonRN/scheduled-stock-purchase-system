@@ -1,6 +1,6 @@
 # Technical Challenge - Scheduled Stock Purchase System
 
-## Source the challenge [here](https://github.com/gcamarao/teste_itau_v2/blob/main/desafio-tecnico-compra-programada.md).
+## [Source the challenge](https://github.com/gcamarao/teste_itau_v2/blob/main/desafio-tecnico-compra-programada.md)
 
 ## Overview
 
@@ -13,28 +13,28 @@ All client contributions are aggregated, assets are purchased through a
 
 The implementation follows these principles:
 
--   Vertical Slice Architecture
--   Modular Monolith
--   Domain Driven Design (DDD-lite)
--   Event-Driven Integration
--   Apache Kafka for event publishing
+- Vertical Slice Architecture
+- Modular Monolith
+- Domain Driven Design (DDD-lite)
+- Event-Driven Integration
+- Apache Kafka for event publishing
 
 The goal is to maintain **high feature cohesion**, low coupling, and
 enable future evolution toward a distributed architecture.
 
 ------------------------------------------------------------------------
 
-# Functional Requirements
+## Functional Requirements
 
-## Scheduled Purchase
+### Scheduled Purchase
 
 Each client defines a **monthly investment amount**.
 
 The system executes purchases **three times per month**:
 
--   Day 5
--   Day 15
--   Day 25
+- Day 5
+- Day 15
+- Day 25
 
 Each execution invests:
 
@@ -42,20 +42,19 @@ Each execution invests:
 
 ------------------------------------------------------------------------
 
-## Recommended Portfolio
+### Recommended Portfolio
 
 Purchases follow a **Top Five portfolio**, composed of five assets with
 predefined allocation percentages.
 
 Example:
 
-  Asset   Allocation
-  ------- ------------
-  PETR4   30%
-  VALE3   25%
-  ITUB4   20%
-  BBDC4   15%
-  WEGE3   10%
+| Asset | Allocation |
+| PETR4 | 30% |
+| VALE3 | 25% |
+| ITUB4 | 20% |
+| BBDC4 | 15% |
+| WEGE3 | 10% |
 
 ------------------------------------------------------------------------
 
@@ -63,14 +62,14 @@ Example:
 
 The system must:
 
-1.  Aggregate all client contributions
-2.  Calculate how many shares to purchase for each asset
-3.  Execute the purchase using the **master account**
+1. Aggregate all client contributions
+2. Calculate how many shares to purchase for each asset
+3. Execute the purchase using the **master account**
 
 Purchases should prioritize:
 
--   standard lot (100 shares)
--   fractional market when necessary
+- standard lot (100 shares)
+- fractional market when necessary
 
 ------------------------------------------------------------------------
 
@@ -78,9 +77,9 @@ Purchases should prioritize:
 
 After the consolidated purchase:
 
-1.  Assets are distributed proportionally to each client
-2.  Allocation is based on each client's contribution
-3.  Remaining shares that cannot be distributed remain in the master
+1. Assets are distributed proportionally to each client
+2. Allocation is based on each client's contribution
+3. Remaining shares that cannot be distributed remain in the master
     account
 
 ------------------------------------------------------------------------
@@ -126,44 +125,42 @@ Tax events must be **published to Kafka**.
 
 ------------------------------------------------------------------------
 
-# Non‑Functional Requirements
+## Non‑Functional Requirements
 
-## Architecture
+### Architecture
 
 The system must use:
 
--   Vertical Slice Architecture
--   Modular Monolith
--   Clear separation between Domain and Infrastructure
+- Vertical Slice Architecture
+- Modular Monolith
+- Clear separation between Domain and Infrastructure
 
 ------------------------------------------------------------------------
 
-## Messaging
+### Messaging
 
 Important events must be published using **Apache Kafka**.
 
 Examples:
 
--   purchase-executed
--   assets-distributed
--   tax-calculated
+- purchase-executed
+- assets-distributed
+- tax-calculated
 
 ------------------------------------------------------------------------
 
-## Asynchronous Processing
+### Asynchronous Processing
 
 Domain events allow integration with:
 
--   tax reporting systems
--   auditing platforms
--   monitoring systems
--   analytics pipelines
+- tax reporting systems
+- auditing platforms
+- monitoring systems
+- analytics pipelines
 
 ------------------------------------------------------------------------
 
-# Architecture
-
-## Architectural Strategy
+### Architectural Strategy
 
 The application is implemented as a **Modular Monolith using Vertical
 Slices**.
@@ -172,32 +169,53 @@ Each feature represents a **business use case**.
 
 Benefits:
 
--   high cohesion
--   low coupling
--   independent evolution of features
--   easier migration to microservices in the future
+- high cohesion
+- low coupling
+- independent evolution of features
+- easier migration to microservices in the future
 
 ------------------------------------------------------------------------
 
-# Project Structure
+### Solution Structure
 
 src
-
-Domain - Entities - ValueObjects - DomainServices
-
-Infrastructure - Database - Repositories - Kafka - Scheduler -
-CotahistParser
-
-Features - Clients - SubscribeClient - Contributions -
-ProcessContribution - Purchases - ExecutePurchase - Distribution -
-DistributeAssets - Portfolio - RebalancePortfolio - Taxes -
-CalculateTaxes
-
-API
+├ Domain
+│ ├ Entities
+│ ├ ValueObjects
+│ └ DomainServices
+│
+├ Infrastructure
+│ ├ Database
+│ ├ Repositories
+│ ├ Kafka
+│ ├ Scheduler
+│ └ CotahistParser
+│
+├ Features
+│
+│ ├ Clients
+│ │ └ SubscribeClient
+│ │
+│ ├ Contributions
+│ │ └ ProcessContribution
+│ │
+│ ├ Purchases
+│ │ └ ExecutePurchase
+│ │
+│ ├ Distribution
+│ │ └ DistributeAssets
+│ │
+│ ├ Portfolio
+│ │ └ RebalancePortfolio
+│ │
+│ └ Taxes
+│ └ CalculateTaxes
+│
+└ Scheduled.Stock.Purchase.Api
 
 ------------------------------------------------------------------------
 
-# Vertical Slice Structure
+### Vertical Slice Structure
 
 Each feature follows this structure:
 
@@ -210,38 +228,38 @@ Tests.cs
 
 ------------------------------------------------------------------------
 
-# Domain Model
+### Domain Model
 
 Main entities:
 
--   Client
--   Account
--   Holding
--   Portfolio
--   Trade
--   Contribution
--   Asset
+- Client
+- Account
+- Holding
+- Portfolio
+- Trade
+- Contribution
+- Asset
 
 ------------------------------------------------------------------------
 
-# Domain Events
+### Domain Events
 
 Events used to decouple modules:
 
--   ContributionProcessed
--   PurchaseExecuted
--   AssetsDistributed
--   TaxesCalculated
+- ContributionProcessed
+- PurchaseExecuted
+- AssetsDistributed
+- TaxesCalculated
 
 ------------------------------------------------------------------------
 
-# Scheduler
+### Scheduler
 
 A background job runs on:
 
--   day 5
--   day 15
--   day 25
+- day 5
+- day 15
+- day 25
 
 Processing flow:
 
@@ -250,46 +268,46 @@ CalculateTaxes
 
 ------------------------------------------------------------------------
 
-# Implementation Plan
+## Implementation Plan
 
-## Phase 1 -- Project Setup
+### Phase 1 -- Project Setup
 
--   create solution
--   configure dependencies
--   configure database
--   configure Kafka
--   create slice structure
+- create solution
+- configure dependencies
+- configure database
+- configure Kafka
+- create slice structure
 
-## Phase 2 -- Domain Modeling
+### Phase 2 -- Domain Modeling
 
 Implement:
 
--   Client
--   Account
--   Holding
--   Portfolio
--   Trade
+- Client
+- Account
+- Holding
+- Portfolio
+- Trade
 
 Add business rules.
 
-## Phase 3 -- Client Registration
+### Phase 3 -- Client Registration
 
 Slice: SubscribeClient
 
 Responsibilities:
 
--   register client
--   define monthly contribution
--   create custody account
+- register client
+- define monthly contribution
+- create custody account
 
-## Phase 4 -- Top Five Portfolio
+### Phase 4 -- Top Five Portfolio
 
 Structure:
 
--   ticker
--   allocationPercent
+- ticker
+- allocationPercent
 
-## Phase 5 -- Market Data Parser
+### Phase 5 -- Market Data Parser
 
 Service:
 
@@ -297,44 +315,44 @@ CotahistParser
 
 Responsible for reading market price files.
 
-## Phase 6 -- Contribution Processing
+### Phase 6 -- Contribution Processing
 
 Slice: ProcessContribution
 
 Responsibilities:
 
--   load active clients
--   calculate contribution amount
--   generate purchase plan
+- load active clients
+- calculate contribution amount
+- generate purchase plan
 
-## Phase 7 -- Purchase Engine
+### Phase 7 -- Purchase Engine
 
 Slice: ExecutePurchase
 
 Responsibilities:
 
--   calculate asset quantities
--   create buy orders
--   update master account
+- calculate asset quantities
+- create buy orders
+- update master account
 
 Publishes event:
 
 PurchaseExecuted
 
-## Phase 8 -- Asset Distribution
+### Phase 8 -- Asset Distribution
 
 Slice: DistributeAssets
 
 Responsibilities:
 
--   distribute assets proportionally
--   update client holdings
+- distribute assets proportionally
+- update client holdings
 
 Publishes event:
 
 AssetsDistributed
 
-## Phase 9 -- Tax Calculation
+### Phase 9 -- Tax Calculation
 
 Slice: CalculateTaxes
 
@@ -342,51 +360,60 @@ Publishes event:
 
 tax-calculated
 
-## Phase 10 -- Portfolio Rebalancing
+### Phase 10 -- Portfolio Rebalancing
 
 Slice: RebalancePortfolio
 
 Responsibilities:
 
--   compare current vs target allocation
--   generate rebalancing trades
+- compare current vs target allocation
+- generate rebalancing trades
 
 ------------------------------------------------------------------------
 
-# Testing Strategy
+## Testing Strategy
 
 ### Domain Tests
 
--   average price calculation
--   proportional distribution
--   rebalancing logic
+- average price calculation
+- proportional distribution
+- rebalancing logic
 
 ### Integration Tests
 
--   feature flows
--   persistence
+- feature flows
+- persistence
 
 ------------------------------------------------------------------------
 
-# Technology Stack
+## Technology Stack
 
--   .NET 10
--   Minimal API
--   Vertical Slice Architecture
--   Apache Kafka
--   EF Core
--   xUnit
+- .NET 10
+- Minimal API
+- Vertical Slice Architecture
+- Apache Kafka
+- EF Core
+- xUnit
 
 ------------------------------------------------------------------------
 
-# Conclusion
+Create a `.env` file based on `.env.example`
+
+MYSQL_ROOT_PASSWORD=your_password_here
+MYSQL_DATABASE=your_database_here
+MYSQL_USER=your_username_here
+MYSQL_PASSWORD=your_password_here
+
+------------------------------------------------------------------------
+
+## Conclusion
 
 This solution prioritizes:
 
--   simple and scalable architecture
--   strong domain modeling
--   feature‑level cohesion
--   asynchronous integration through Kafka
+- simple and scalable architecture
+- strong domain modeling
+- feature‑level cohesion
+- asynchronous integration through Kafka
 
 Vertical Slice Architecture enables incremental development while
 keeping the system maintainable and extensible.
