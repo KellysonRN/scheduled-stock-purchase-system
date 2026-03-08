@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Scheduled.Stock.Purchase.Api/Scheduled.Stock.Purchase.Api.csproj" />
+    <Project Path="src/Scheduled.Stock.Purchase.Domain/Scheduled.Stock.Purchase.Domain.csproj" />
+    <Project Path="src/Scheduled.Stock.Purchase.Features/Scheduled.Stock.Purchase.Features.csproj" />
+    <Project Path="src/Scheduled.Stock.Purchase.Infrastructure/Scheduled.Stock.Purchase.Infrastructure.csproj" />
+  </Folder>
+</Solution>
