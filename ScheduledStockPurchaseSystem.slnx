@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="Scheduled.Stock.Purchase.Shared/Scheduled.Stock.Purchase.Shared.csproj" Id="2aacce4b-d5b3-4ce0-9450-de0cac1a3335" />
     <Project Path="src/Scheduled.Stock.Purchase.Api/Scheduled.Stock.Purchase.Api.csproj" />
     <Project Path="src/Scheduled.Stock.Purchase.Domain/Scheduled.Stock.Purchase.Domain.csproj" />
     <Project Path="src/Scheduled.Stock.Purchase.Features/Scheduled.Stock.Purchase.Features.csproj" />
