@@ -6,19 +6,20 @@ using Microsoft.AspNetCore.Mvc;
 namespace Scheduled.Stock.Purchase.Api.Middleware;
 
 /// <summary>
-/// Middleware responsável pelo tratamento global de exceções não tratadas na aplicação.
-/// Implementa a interface <see cref="IExceptionHandler"/> para interceptar erros e retornar um <see cref="ProblemDetails"/> apropriado.
+/// Middleware responsible for globally handling unhandled exceptions in the application.
+/// Implements the <see cref="IExceptionHandler"/> interface to intercept errors and return an appropriate <see cref="ProblemDetails"/>.
 /// </summary>
 public sealed class ExceptionMiddleware : IExceptionHandler
 {
     /// <summary>
-    /// Intercepta a exceção lançada, configura o <see cref="ProblemDetails"/> conforme o tipo de erro e escreve a resposta JSON no <see cref="HttpContext.Response"/>.
+    /// Intercepts the thrown exception, configures the <see cref="ProblemDetails"/> according to the error type,
+    /// and writes the JSON response to the <see cref="HttpContext.Response"/>.
     /// </summary>
-    /// <param name="httpContext">Contexto HTTP da requisição.</param>
-    /// <param name="exception">Exceção capturada a ser tratada.</param>
-    /// <param name="cancellationToken">Token para cancelar a operação, se necessário.</param>
+    /// <param name="httpContext">The HTTP request context.</param>
+    /// <param name="exception">The captured exception to be handled.</param>
+    /// <param name="cancellationToken">Token used to cancel the operation, if necessary.</param>
     /// <returns>
-    /// <c>true</c> se a exceção foi tratada e a resposta escrita; caso contrário, <c>false</c>.
+    /// <c>true</c> if the exception was handled and the response was written; otherwise, <c>false</c>.
     /// </returns>
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
@@ -29,13 +30,13 @@ public sealed class ExceptionMiddleware : IExceptionHandler
             case NotImplementedException:
                 problem.Type = "https://datatracker.ietf.org/doc/html/rfc9110#name-501-not-implemented";
                 problem.Status = StatusCodes.Status501NotImplemented;
-                problem.Title = "Este recurso ainda não está disponível.";
+                problem.Title = "This feature is not yet available.";
                 break;
 
             default:
                 problem.Type = "https://datatracker.ietf.org/doc/html/rfc9110#name-500-internal-server-error";
                 problem.Status = StatusCodes.Status500InternalServerError;
-                problem.Title = "Erro Interno do Servidor. Por favor, tente novamente mais tarde.";
+                problem.Title = "Internal Server Error. Please try again later.";
                 break;
         }
 
