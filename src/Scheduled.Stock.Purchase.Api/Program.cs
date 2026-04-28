@@ -1,3 +1,4 @@
+using Scalar.AspNetCore;
 using Scheduled.Stock.Purchase.Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +12,14 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.MapScalarApiReference(options => options.WithTitle("Scheduled.Stock.Purchase.Api")
+                                                .WithTheme(ScalarTheme.Default)
+                                                .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient)
+                                                .WithOpenApiRoutePattern("/openapi/{documentName}.json")
+                                                .SortTagsAlphabetically()
+                                                .SortOperationsByMethod()
+                                                .ExpandAllTags()
+                                                .HideDeveloperTools());
 }
 
 app.UseExceptionHandler();
