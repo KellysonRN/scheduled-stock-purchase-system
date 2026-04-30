@@ -1,23 +1,42 @@
+using Scalar.AspNetCore;
+using Scheduled.Stock.Purchase.Api.Middleware;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<ExceptionMiddleware>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.MapScalarApiReference(options => options.WithTitle("Scheduled.Stock.Purchase.Api")
+                                                .WithTheme(ScalarTheme.Default)
+                                                .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient)
+                                                .WithOpenApiRoutePattern("/openapi/{documentName}.json")
+                                                .SortTagsAlphabetically()
+                                                .SortOperationsByMethod()
+                                                .ExpandAllTags()
+                                                .HideDeveloperTools());
 }
 
+app.UseExceptionHandler();
 app.UseHttpsRedirection();
 
 var summaries = new[]
 {
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
+
+if (app.Environment.IsDevelopment())
+{
+    app.MapGet("/test", () =>
+    {
+        throw new NotImplementedException("Teste");
+    });
+}
 
 app.MapGet("/weatherforecast", () =>
 {
