@@ -17,7 +17,9 @@ public sealed class Ticker : IEquatable<Ticker>
         if (string.IsNullOrWhiteSpace(value))
             return Result<Ticker>.Failure(TickerErrors.Required);
 
-        var normalized = value.Trim().ToUpper();
+        var span = value.AsSpan().Trim();
+
+        var normalized = span.ToString().ToUpperInvariant();
 
         return !Regex.IsMatch(normalized, @"^[A-Z]{4}[0-9]{1,2}$")
             ? Result<Ticker>.Failure(TickerErrors.InvalidFormat)
