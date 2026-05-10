@@ -1,6 +1,6 @@
-﻿using FluentAssertions;
-using Scheduled.Stock.Purchase.Domain.Entities;
+﻿using Scheduled.Stock.Purchase.Domain.Entities;
 using Scheduled.Stock.Purchase.Domain.ValueObjects;
+using Shouldly;
 
 namespace Scheduled.Stock.Purchase.Domain.Tests.Entities;
 
@@ -14,29 +14,29 @@ public class TradeTests
         var priceResult = Money.Create(25m);
         var quantity = 10m;
 
-        tickerResult.IsSuccess.Should().BeTrue();
-        priceResult.IsSuccess.Should().BeTrue();
+        tickerResult.IsSuccess.ShouldBeTrue();
+        priceResult.IsSuccess.ShouldBeTrue();
 
         var ticker = tickerResult.Value;
         var price = priceResult.Value;
 
-        ticker.Should().NotBeNull();
-        price.Should().NotBeNull();
+        ticker.ShouldNotBeNull();
+        price.ShouldNotBeNull();
 
-        // Act
+        //
         var result = Trade.Buy(ticker, quantity, price);
 
         // Assert
-        result.IsSuccess.Should().BeTrue();
+        result.IsSuccess.ShouldBeTrue();
 
         var trade = result.Value;
 
-        trade.Should().NotBeNull();
-        trade.Ticker.Should().Be(ticker);
-        trade.Quantity.Should().Be(quantity);
-        trade.Price.Should().Be(price);
-        trade.Type.Should().Be(TradeType.Buy);
-        trade.ExecutedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(1));
+        trade.ShouldNotBeNull();
+        trade.Ticker.ShouldBe(ticker);
+        trade.Quantity.ShouldBe(quantity);
+        trade.Price.ShouldBe(price);
+        trade.Type.ShouldBe(TradeType.Buy);
+        (DateTime.UtcNow - trade.ExecutedAt).ShouldBeLessThan(TimeSpan.FromSeconds(1));
     }
 
     [Fact]
@@ -47,24 +47,24 @@ public class TradeTests
         var priceResult = Money.Create(30m);
         var quantity = 5m;
 
-        tickerResult.IsSuccess.Should().BeTrue();
-        priceResult.IsSuccess.Should().BeTrue();
+        tickerResult.IsSuccess.ShouldBeTrue();
+        priceResult.IsSuccess.ShouldBeTrue();
 
         var ticker = tickerResult.Value;
         var price = priceResult.Value;
 
-        ticker.Should().NotBeNull();
-        price.Should().NotBeNull();
+        ticker.ShouldNotBeNull();
+        price.ShouldNotBeNull();
 
         // Act
         var result = Trade.Sell(ticker, quantity, price);
 
         // Assert
-        result.IsSuccess.Should().BeTrue();
+        result.IsSuccess.ShouldBeTrue();
 
         var trade = result.Value;
-        trade.Should().NotBeNull();
-        trade.Type.Should().Be(TradeType.Sell);
+        trade.ShouldNotBeNull();
+        trade.Type.ShouldBe(TradeType.Sell);
     }
 
     [Theory]
@@ -76,21 +76,21 @@ public class TradeTests
         var tickerResult = Ticker.Create("ITUB4");
         var priceResult = Money.Create(10m);
 
-        tickerResult.IsSuccess.Should().BeTrue();
-        priceResult.IsSuccess.Should().BeTrue();
+        tickerResult.IsSuccess.ShouldBeTrue();
+        priceResult.IsSuccess.ShouldBeTrue();
 
         var ticker = tickerResult.Value;
         var price = priceResult.Value;
 
-        ticker.Should().NotBeNull();
-        price.Should().NotBeNull();
+        ticker.ShouldNotBeNull();
+        price.ShouldNotBeNull();
 
         // Act
         var result = Trade.Buy(ticker, quantity, price);
 
         // Assert
-        result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(TradeErrors.InvalidQuantity);
+        result.IsFailure.ShouldBeTrue();
+        result.Error.ShouldBe(TradeErrors.InvalidQuantity);
     }
 
     [Fact]
@@ -100,22 +100,21 @@ public class TradeTests
         Ticker ticker = null!;
         var priceResult = Money.Create(10m);
 
-        priceResult.IsSuccess.Should().BeTrue();
+        priceResult.IsSuccess.ShouldBeTrue();
 
         var price = priceResult.Value;
 
-        price.Should().NotBeNull();
+        price.ShouldNotBeNull();
 
         // Act
         var result = Trade.Buy(ticker!, 10m, price);
 
         // Assert
-        result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(TradeErrors.InvalidTicker);
+        result.IsFailure.ShouldBeTrue();
+        result.Error.ShouldBe(TradeErrors.InvalidTicker);
     }
 
     [Theory]
-    [InlineData(0)]
     [InlineData(-5)]
     public void Should_Fail_When_Price_Is_Invalid(decimal priceValue)
     {
@@ -123,20 +122,20 @@ public class TradeTests
         var tickerResult = Ticker.Create("ITUB4");
         var priceResult = Money.Create(priceValue);
 
-        tickerResult.IsSuccess.Should().BeTrue();
-        priceResult.IsFailure.Should().BeTrue();
+        tickerResult.IsSuccess.ShouldBeTrue();
+        priceResult.IsFailure.ShouldBeTrue();
 
         var ticker = tickerResult.Value;
         var price = priceResult.Value;
 
-        ticker.Should().NotBeNull();
+        ticker.ShouldNotBeNull();
 
         // Act
         var result = Trade.Buy(ticker, 10m, price!);
 
         // Assert
-        result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(TradeErrors.InvalidPrice);
+        result.IsFailure.ShouldBeTrue();
+        result.Error.ShouldBe(TradeErrors.InvalidPrice);
     }
 
     [Fact]
@@ -146,24 +145,24 @@ public class TradeTests
         var tickerResult = Ticker.Create("ITUB4");
         var priceResult = Money.Create(10m);
 
-        tickerResult.IsSuccess.Should().BeTrue();
-        priceResult.IsSuccess.Should().BeTrue();
+        tickerResult.IsSuccess.ShouldBeTrue();
+        priceResult.IsSuccess.ShouldBeTrue();
 
         var ticker = tickerResult.Value;
         var price = priceResult.Value;
 
-        ticker.Should().NotBeNull();
-        price.Should().NotBeNull();
+        ticker.ShouldNotBeNull();
+        price.ShouldNotBeNull();
 
         // Act
         var result = Trade.Buy(ticker, 10m, price);
 
         // Assert
-        result.IsSuccess.Should().BeTrue();
+        result.IsSuccess.ShouldBeTrue();
 
         var trade = result.Value;
-        trade.Should().NotBeNull();
-        trade.ExecutedAt.Should().NotBe(default);
+        trade.ShouldNotBeNull();
+        trade.ExecutedAt.ShouldNotBe(default);
     }
 
     [Fact]
@@ -173,22 +172,22 @@ public class TradeTests
         var tickerResult = Ticker.Create("ITUB4");
         var priceResult = Money.Create(10m);
 
-        tickerResult.IsSuccess.Should().BeTrue();
-        priceResult.IsSuccess.Should().BeTrue();
+        tickerResult.IsSuccess.ShouldBeTrue();
+        priceResult.IsSuccess.ShouldBeTrue();
 
         var ticker = tickerResult.Value;
         var price = priceResult.Value;
 
-        ticker.Should().NotBeNull();
-        price.Should().NotBeNull();
+        ticker.ShouldNotBeNull();
+        price.ShouldNotBeNull();
 
         // Act
         var trade1 = Trade.Buy(ticker, 10m, price).Value;
         var trade2 = Trade.Buy(ticker, 10m, price).Value;
 
         // Assert
-        trade1.Should().NotBeNull();
-        trade2.Should().NotBeNull();
-        trade1.Id.Should().NotBe(trade2.Id);
+        trade1.ShouldNotBeNull();
+        trade2.ShouldNotBeNull();
+        trade1.Id.ShouldNotBe(trade2.Id);
     }
 }

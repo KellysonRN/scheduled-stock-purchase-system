@@ -1,4 +1,5 @@
 using Scheduled.Stock.Purchase.Domain.ValueObjects;
+using Shouldly;
 
 namespace Scheduled.Stock.Purchase.Domain.Tests;
 
@@ -12,9 +13,9 @@ public class TickerTests
     {
         var result = Ticker.Create(value);
 
-        Assert.True(result.IsSuccess);
-        Assert.NotNull(result.Value);
-        Assert.Equal(expected, result.Value!.Value);
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.ShouldNotBeNull();
+        result.Value!.Value.ShouldBe(expected);
     }
 
     [Theory]
@@ -25,25 +26,25 @@ public class TickerTests
     {
         var result = Ticker.Create(value!);
 
-        Assert.True(result.IsFailure);
-        Assert.Equal(TickerErrors.Required.Code, result.Error.Code);
-        Assert.Equal(TickerErrors.Required.Message, result.Error.Message);
+        result.IsFailure.ShouldBeTrue();
+        result.Error.Code.ShouldBe(TickerErrors.Required.Code);
+        result.Error.Message.ShouldBe(TickerErrors.Required.Message);
     }
 
     [Theory]
-    [InlineData("ABC1")]          // too short
-    [InlineData("ABCDE1")]        // too many letters
-    [InlineData("ABCD")]          // missing digits
-    [InlineData("ABCD123")]       // too many digits
-    [InlineData("AB1D2")]         // invalid letter/digit order
-    [InlineData("ABCD!1")]        // invalid character
+    [InlineData("ABC1")]
+    [InlineData("ABCDE1")]
+    [InlineData("ABCD")]
+    [InlineData("ABCD123")]
+    [InlineData("AB1D2")]
+    [InlineData("ABCD!1")]
     public void Should_Fail_When_Ticker_Has_Invalid_Format(string value)
     {
         var result = Ticker.Create(value);
 
-        Assert.True(result.IsFailure);
-        Assert.Equal(TickerErrors.InvalidFormat.Code, result.Error.Code);
-        Assert.Equal(TickerErrors.InvalidFormat.Message, result.Error.Message);
+        result.IsFailure.ShouldBeTrue();
+        result.Error.Code.ShouldBe(TickerErrors.InvalidFormat.Code);
+        result.Error.Message.ShouldBe(TickerErrors.InvalidFormat.Message);
     }
 
     [Fact]
@@ -52,7 +53,7 @@ public class TickerTests
         var ticker1 = Ticker.Create("goog12").Value;
         var ticker2 = Ticker.Create(" GOOG12 ").Value;
 
-        Assert.Equal(ticker1, ticker2);
-        Assert.Equal(ticker1!.GetHashCode(), ticker2!.GetHashCode());
+        ticker1.ShouldBe(ticker2);
+        ticker1!.GetHashCode().ShouldBe(ticker2!.GetHashCode());
     }
 }

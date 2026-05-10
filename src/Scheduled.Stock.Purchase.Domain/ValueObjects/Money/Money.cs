@@ -12,7 +12,7 @@ public sealed partial class Money : IEquatable<Money>
     }
 
     public static Result<Money> Create(decimal amount) =>
-        amount <= 0
+        amount < 0
             ? Result<Money>.Failure(MoneyErrors.Negative)
             : Result<Money>.Success(new Money(decimal.Round(amount, 2)));
 
