@@ -1,4 +1,5 @@
 using Scheduled.Stock.Purchase.Domain.ValueObjects;
+using Shouldly;
 
 namespace Scheduled.Stock.Purchase.Domain.Tests;
 
@@ -9,8 +10,8 @@ public class MoneyTests
     {
         var result = Money.Create(10.129m);
 
-        Assert.True(result.IsSuccess);
-        Assert.Equal(10.13m, result.Value?.Amount);
+        result.IsSuccess.ShouldBeTrue();
+        result.Value!.Amount.ShouldBe(10.13m);
     }
 
     [Fact]
@@ -18,9 +19,9 @@ public class MoneyTests
     {
         var result = Money.Create(-1m);
 
-        Assert.True(result.IsFailure);
-        Assert.Equal(MoneyErrors.Negative.Code, result.Error.Code);
-        Assert.Equal(MoneyErrors.Negative.Message, result.Error.Message);
+        result.IsFailure.ShouldBeTrue();
+        result.Error.Code.ShouldBe(MoneyErrors.Negative.Code);
+        result.Error.Message.ShouldBe(MoneyErrors.Negative.Message);
     }
 
     [Fact]
@@ -31,8 +32,8 @@ public class MoneyTests
 
         var result = first.Add(second);
 
-        Assert.True(result.IsSuccess);
-        Assert.Equal(20.00m, result.Value?.Amount);
+        result.IsSuccess.ShouldBeTrue();
+        result.Value!.Amount.ShouldBe(20.00m);
     }
 
     [Fact]
@@ -43,8 +44,8 @@ public class MoneyTests
 
         var result = first.Subtract(second);
 
-        Assert.True(result.IsSuccess);
-        Assert.Equal(10.25m, result.Value?.Amount);
+        result.IsSuccess.ShouldBeTrue();
+        result.Value!.Amount.ShouldBe(10.25m);
     }
 
     [Fact]
@@ -55,9 +56,9 @@ public class MoneyTests
 
         var result = first.Subtract(second);
 
-        Assert.True(result.IsFailure);
-        Assert.Equal(MoneyErrors.InvalidLength.Code, result.Error.Code);
-        Assert.Equal(MoneyErrors.InvalidLength.Message, result.Error.Message);
+        result.IsFailure.ShouldBeTrue();
+        result.Error.Code.ShouldBe(MoneyErrors.InvalidLength.Code);
+        result.Error.Message.ShouldBe(MoneyErrors.InvalidLength.Message);
     }
 
     [Fact]
@@ -67,8 +68,8 @@ public class MoneyTests
 
         var result = value.Multiply(3);
 
-        Assert.True(result.IsSuccess);
-        Assert.Equal(9.99m, result.Value?.Amount);
+        result.IsSuccess.ShouldBeTrue();
+        result.Value!.Amount.ShouldBe(9.99m);
     }
 
     [Fact]
@@ -77,7 +78,7 @@ public class MoneyTests
         var first = Money.Create(12.34m).Value;
         var second = Money.Create(12.34m).Value;
 
-        Assert.Equal(first, second);
-        Assert.Equal(first!.GetHashCode(), second!.GetHashCode());
+        first.ShouldBe(second);
+        first!.GetHashCode().ShouldBe(second!.GetHashCode());
     }
 }

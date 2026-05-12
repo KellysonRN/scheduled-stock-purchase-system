@@ -1,4 +1,5 @@
 using Scheduled.Stock.Purchase.Domain.ValueObjects;
+using Shouldly;
 
 namespace Scheduled.Stock.Purchase.Domain.Tests;
 
@@ -12,9 +13,9 @@ public class QuantityTests
     {
         var result = Quantity.Create(value);
 
-        Assert.True(result.IsSuccess);
-        Assert.NotNull(result.Value);
-        Assert.Equal(value, result.Value!.Value);
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.ShouldNotBeNull();
+        result.Value!.Value.ShouldBe(value);
     }
 
     [Theory]
@@ -25,9 +26,9 @@ public class QuantityTests
     {
         var result = Quantity.Create(value);
 
-        Assert.True(result.IsFailure);
-        Assert.Equal(QuantityErrors.Negative.Code, result.Error.Code);
-        Assert.Equal(QuantityErrors.Negative.Message, result.Error.Message);
+        result.IsFailure.ShouldBeTrue();
+        result.Error.Code.ShouldBe(QuantityErrors.Negative.Code);
+        result.Error.Message.ShouldBe(QuantityErrors.Negative.Message);
     }
 
     [Fact]
@@ -36,7 +37,7 @@ public class QuantityTests
         var first = Quantity.Create(7).Value;
         var second = Quantity.Create(7).Value;
 
-        Assert.Equal(first, second);
-        Assert.Equal(first!.GetHashCode(), second!.GetHashCode());
+        first.ShouldBe(second);
+        first!.GetHashCode().ShouldBe(second!.GetHashCode());
     }
 }

@@ -1,4 +1,5 @@
 using Scheduled.Stock.Purchase.Domain.ValueObjects;
+using Shouldly;
 
 namespace Scheduled.Stock.Purchase.Domain.Tests;
 
@@ -9,9 +10,9 @@ public class ContributionAmountTests
     {
         var result = ContributionAmount.Create(25.50m);
 
-        Assert.True(result.IsSuccess);
-        Assert.NotNull(result.Value);
-        Assert.Equal(25.50m, result.Value!.Value.Amount);
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.ShouldNotBeNull();
+        result.Value!.Value.Amount.ShouldBe(25.50m);
     }
 
     [Fact]
@@ -19,9 +20,9 @@ public class ContributionAmountTests
     {
         var result = ContributionAmount.Create(0m);
 
-        Assert.True(result.IsFailure);
-        Assert.Equal(ContributionAmountErrors.ZeroContribution.Code, result.Error.Code);
-        Assert.Equal(ContributionAmountErrors.ZeroContribution.Message, result.Error.Message);
+        result.IsFailure.ShouldBeTrue();
+        result.Error.Code.ShouldBe(ContributionAmountErrors.ZeroContribution.Code);
+        result.Error.Message.ShouldBe(ContributionAmountErrors.ZeroContribution.Message);
     }
 
     [Fact]
@@ -29,9 +30,9 @@ public class ContributionAmountTests
     {
         var result = ContributionAmount.Create(-5m);
 
-        Assert.True(result.IsFailure);
-        Assert.Equal(MoneyErrors.Negative.Code, result.Error.Code);
-        Assert.Equal(MoneyErrors.Negative.Message, result.Error.Message);
+        result.IsFailure.ShouldBeTrue();
+        result.Error.Code.ShouldBe(MoneyErrors.Negative.Code);
+        result.Error.Message.ShouldBe(MoneyErrors.Negative.Message);
     }
 
     [Fact]
@@ -40,7 +41,7 @@ public class ContributionAmountTests
         var first = ContributionAmount.Create(100m).Value;
         var second = ContributionAmount.Create(100.00m).Value;
 
-        Assert.Equal(first, second);
-        Assert.Equal(first!.GetHashCode(), second!.GetHashCode());
+        first.ShouldBe(second);
+        first!.GetHashCode().ShouldBe(second!.GetHashCode());
     }
 }
