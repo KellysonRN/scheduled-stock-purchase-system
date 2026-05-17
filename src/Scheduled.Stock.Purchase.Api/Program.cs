@@ -26,7 +26,21 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseExceptionHandler();
+app.UseMiddleware<RateLimitingMiddleware>();
 app.UseHttpsRedirection();
+
+// Test endpoints registration (only in tests via WebApplicationFactory override)
+if (!app.Environment.IsProduction() && app.Environment.EnvironmentName == "Testing")
+{
+    app.MapGet("/endpoint-a", () => new { endpoint = "endpoint-a", timestamp = DateTime.UtcNow })
+        .WithName("EndpointA");
+
+    app.MapGet("/endpoint-b", () => new { endpoint = "endpoint-b", timestamp = DateTime.UtcNow })
+        .WithName("EndpointB");
+
+    app.MapPost("/endpoint-a", () => new { endpoint = "endpoint-a", method = "POST", timestamp = DateTime.UtcNow })
+        .WithName("EndpointAPost");
+}
 
 var summaries = new[]
 {

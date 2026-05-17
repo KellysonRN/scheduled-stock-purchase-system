@@ -1,5 +1,5 @@
 using System.Net.Mime;
-
+using System.Text.Json;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,6 +11,12 @@ namespace Scheduled.Stock.Purchase.Api.Middleware;
 /// </summary>
 public sealed class ExceptionMiddleware : IExceptionHandler
 {
+    private readonly JsonSerializerOptions _jsonSerializerOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
+    };
+
     /// <summary>
     /// Intercepts the thrown exception, configures the <see cref="ProblemDetails"/> according to the error type,
     /// and writes the JSON response to the <see cref="HttpContext.Response"/>.
@@ -21,28 +27,38 @@ public sealed class ExceptionMiddleware : IExceptionHandler
     /// <returns>
     /// <c>true</c> if the exception was handled and the response was written; otherwise, <c>false</c>.
     /// </returns>
-    public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
+    public async ValueTask<bool> TryHandleAsync(
+        HttpContext httpContext,
+        Exception exception,
+        CancellationToken cancellationToken
+    )
     {
         ProblemDetails problem = new();
 
         switch (exception)
         {
             case NotImplementedException:
-                problem.Type = "https://datatracker.ietf.org/doc/html/rfc9110#name-501-not-implemented";
+                problem.Type =
+                    "https://datatracker.ietf.org/doc/html/rfc9110#name-501-not-implemented";
                 problem.Status = StatusCodes.Status501NotImplemented;
                 problem.Title = "This feature is not yet available.";
                 break;
 
             default:
-                problem.Type = "https://datatracker.ietf.org/doc/html/rfc9110#name-500-internal-server-error";
+                problem.Type =
+                    "https://datatracker.ietf.org/doc/html/rfc9110#name-500-internal-server-error";
                 problem.Status = StatusCodes.Status500InternalServerError;
                 problem.Title = "Internal Server Error. Please try again later.";
                 break;
         }
 
-        httpContext.Response.StatusCode = problem.Status ?? StatusCodes.Status500InternalServerError;
+        httpContext.Response.StatusCode =
+            problem.Status ?? StatusCodes.Status500InternalServerError;
         httpContext.Response.ContentType = MediaTypeNames.Application.ProblemJson;
-        await httpContext.Response.WriteAsJsonAsync(problem, cancellationToken);
+
+        var payload = JsonSerializer.Serialize(problem, _jsonSerializerOptions);
+
+        await httpContext.Response.WriteAsync(payload, cancellationToken);
 
         return true;
     }
