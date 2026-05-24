@@ -26,6 +26,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseExceptionHandler();
+app.UseMiddleware<RateLimitingMiddleware>();
 app.UseHttpsRedirection();
 
 var summaries = new[]

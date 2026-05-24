@@ -7,6 +7,7 @@
     <Project Path="src/Scheduled.Stock.Purchase.Infrastructure/Scheduled.Stock.Purchase.Infrastructure.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/Scheduled.Stock.Purchase.Api.Tests/Scheduled.Stock.Purchase.Api.Tests.csproj" />
     <Project Path="tests/Scheduled.Stock.Purchase.Domain.Tests/Scheduled.Stock.Purchase.Domain.Tests.csproj" />
   </Folder>
 </Solution>

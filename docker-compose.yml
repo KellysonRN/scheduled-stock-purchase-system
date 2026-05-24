@@ -1,5 +1,4 @@
 services:
-
   mysql:
     image: mysql:8.0
     container_name: scheduled-stock-purchase-mysql
@@ -75,6 +74,13 @@ services:
       Kafka__BootstrapServers: kafka:9092
     networks:
       - scheduled-stock-purchase-network
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.54
+    ports:
+      - "16686:16686" # UI
+      - "4317:4317" # OTLP gRPC
+      - "4318:4318" # OTLP HTTP
 
 volumes:
   mysql_data:
