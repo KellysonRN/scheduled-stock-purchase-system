@@ -1,13 +1,13 @@
 using Scalar.AspNetCore;
+
+using Scheduled.Stock.Purchase.Api;
 using Scheduled.Stock.Purchase.Api.Middleware;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddOpenApi();
-builder.Services.AddProblemDetails();
-builder.Services.AddExceptionHandler<ExceptionMiddleware>();
+builder.Services.AddApi();
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
@@ -29,7 +29,7 @@ app.UseExceptionHandler();
 app.UseMiddleware<RateLimitingMiddleware>();
 app.UseHttpsRedirection();
 
-var summaries = new[]
+string[] summaries = new[]
 {
     "Freezing",
     "Bracing",
@@ -58,7 +58,7 @@ app.MapGet(
         "/weatherforecast",
         () =>
         {
-            var forecast = Enumerable
+            WeatherForecast[] forecast = Enumerable
                 .Range(1, 5)
                 .Select(index => new WeatherForecast(
                     DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
@@ -71,9 +71,9 @@ app.MapGet(
     )
     .WithName("GetWeatherForecast");
 
-app.Run();
+await app.RunAsync();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 }
