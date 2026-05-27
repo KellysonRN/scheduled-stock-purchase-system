@@ -4,8 +4,14 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.7" />
     <PackageReference Include="Scalar.AspNetCore" Version="2.14.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Scheduled.Stock.Purchase.Domain\Scheduled.Stock.Purchase.Domain.csproj" />
+    <ProjectReference Include="..\Scheduled.Stock.Purchase.Shared\Scheduled.Stock.Purchase.Shared.csproj" />
   </ItemGroup>
 </Project>

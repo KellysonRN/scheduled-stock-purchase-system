@@ -1,4 +1,6 @@
+using System.Reflection;
 using Scalar.AspNetCore;
+using Scheduled.Stock.Purchase.Api.Extensions;
 using Scheduled.Stock.Purchase.Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,7 +9,12 @@ builder.Services.AddOpenApi();
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<ExceptionMiddleware>();
 
+builder.Services.RegisterApiEndpointsFromAssembly(Assembly.GetExecutingAssembly());
+builder.Services.AddHandlersFromAssembly(Assembly.GetExecutingAssembly());
+
 var app = builder.Build();
+
+app.MapApiEndpoints();
 
 if (app.Environment.IsDevelopment())
 {
@@ -29,35 +36,24 @@ app.UseExceptionHandler();
 app.UseMiddleware<RateLimitingMiddleware>();
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing",
-    "Bracing",
-    "Chilly",
-    "Cool",
-    "Mild",
-    "Warm",
-    "Balmy",
-    "Hot",
-    "Sweltering",
-    "Scorching",
-};
-
-if (app.Environment.IsDevelopment())
-{
-    app.MapGet(
-        "/test",
-        () =>
-        {
-            throw new NotImplementedException("Teste");
-        }
-    );
-}
-
 app.MapGet(
         "/weatherforecast",
         () =>
         {
+            var summaries = new[]
+            {
+                "Freezing",
+                "Bracing",
+                "Chilly",
+                "Cool",
+                "Mild",
+                "Warm",
+                "Balmy",
+                "Hot",
+                "Sweltering",
+                "Scorching",
+            };
+
             var forecast = Enumerable
                 .Range(1, 5)
                 .Select(index => new WeatherForecast(
@@ -66,6 +62,7 @@ app.MapGet(
                     summaries[Random.Shared.Next(summaries.Length)]
                 ))
                 .ToArray();
+
             return forecast;
         }
     )
