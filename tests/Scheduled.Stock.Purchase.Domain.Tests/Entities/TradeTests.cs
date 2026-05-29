@@ -115,7 +115,7 @@ public class TradeTests
     }
 
     [Theory]
-    [InlineData(-5)]
+    [InlineData(0)]
     public void Should_Fail_When_Price_Is_Invalid(decimal priceValue)
     {
         // Arrange
@@ -123,15 +123,16 @@ public class TradeTests
         var priceResult = Money.Create(priceValue);
 
         tickerResult.IsSuccess.ShouldBeTrue();
-        priceResult.IsFailure.ShouldBeTrue();
+        priceResult.IsSuccess.ShouldBeTrue();
 
         var ticker = tickerResult.Value;
         var price = priceResult.Value;
 
         ticker.ShouldNotBeNull();
+        price.ShouldNotBeNull();
 
         // Act
-        var result = Trade.Buy(ticker, 10m, price!);
+        var result = Trade.Buy(ticker, 10m, price);
 
         // Assert
         result.IsFailure.ShouldBeTrue();
