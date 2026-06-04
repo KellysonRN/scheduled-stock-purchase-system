@@ -31,7 +31,7 @@ The goal is to maintain **high feature cohesion**, low coupling, and enable futu
 ### Recommended Portfolio (Top Five)
 
 | Asset | Allocation |
-|-------|-----------|
+| ------- | ----------- |
 | PETR4 | 30% |
 | VALE3 | 25% |
 | ITUB4 | 20% |
@@ -78,7 +78,7 @@ The project was recently refactored to a Vertical Slice organization. See the fu
 ## Technology Stack
 
 | Layer | Technology |
-|-------|-----------|
+| ------- | ----------- |
 | **Framework** | .NET 10 |
 | **API** | Minimal API (Built-in) |
 | **Database** | MySQL + EF Core |
@@ -386,7 +386,7 @@ The project was recently refactored to a Vertical Slice organization. See the fu
 ### ⚠️ Testing Status
 
 | Project | Tests | Coverage |
-|---------|-------|----------|
+| --------- | ------- | ---------- |
 | **Scheduled.Stock.Purchase.Domain.Tests** | ✅ 7/7 test classes | All entities & value objects |
 | **Scheduled.Stock.Purchase.Api.Tests** | ✅ 2/3 suites | Rate limiting complete; CreateTrade tests missing |
 | **Scheduled.Stock.Purchase.Shared.Tests** | ✅ 1/1 | Result pattern validated |
@@ -394,7 +394,7 @@ The project was recently refactored to a Vertical Slice organization. See the fu
 ### ❌ What's Missing (Next Priorities)
 
 | Phase | Feature | Status | Needed |
-|-------|---------|--------|--------|
+| ------- | --------- | -------- | -------- |
 | **2-4** | **Database & Persistence** | ❌ | Infrastructure project, EF Core, DbContext, Migrations, Repositories |
 | **2** | **Trade CRUD** | ⚠️ | GetTrade, ListTrades, UpdateTrade, DeleteTrade endpoints |
 | **1** | **Client Management** | ❌ | Create, Get, List, Update, Delete client features |
@@ -416,11 +416,11 @@ The project was recently refactored to a Vertical Slice organization. See the fu
 
 Before implementing any new features, complete Trade CRUD with database:
 
-**Vertical Slice: Complete Trade Management**
+> **Vertical Slice: Complete Trade Management**
 
 1. **Create Infrastructure Project**
 
-   ```
+   ```json
    src/Scheduled.Stock.Purchase.Infrastructure/
    ├─ Data/ScheduledStockPurchaseDbContext.cs
    ├─ Data/Migrations/
