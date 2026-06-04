@@ -2,12 +2,20 @@ using System.Reflection;
 using Scalar.AspNetCore;
 using Scheduled.Stock.Purchase.Api.Extensions;
 using Scheduled.Stock.Purchase.Api.Middleware;
+using Scheduled.Stock.Purchase.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Services
 builder.Services.AddOpenApi();
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<ExceptionMiddleware>();
+
+// Infrastructure
+var connectionString =
+    builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+builder.Services.AddInfrastructure(connectionString);
 
 builder.Services.RegisterApiEndpointsFromAssembly(Assembly.GetExecutingAssembly());
 builder.Services.AddHandlersFromAssembly(Assembly.GetExecutingAssembly());
@@ -68,7 +76,7 @@ app.MapGet(
     )
     .WithName("GetWeatherForecast");
 
-app.Run();
+await app.RunAsync();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {
