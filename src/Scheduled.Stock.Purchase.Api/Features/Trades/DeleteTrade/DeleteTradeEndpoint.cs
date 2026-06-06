@@ -19,7 +19,7 @@ internal sealed class DeleteTradeEndpoint : IApiEndpoint
 
     private static async Task<IResult> HandleAsync(
         Guid id,
-        IHandler<DeleteTradeRequest, Result<Unit>> handler,
+        IHandler<DeleteTradeRequest, Result<DeleteTradeResponse>> handler,
         CancellationToken cancellationToken
     )
     {

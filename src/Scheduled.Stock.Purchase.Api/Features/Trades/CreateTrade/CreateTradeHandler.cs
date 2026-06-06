@@ -29,10 +29,14 @@ internal sealed class CreateTradeHandler(ITradeRepository tradeRepository)
         if (priceResult.IsFailure)
             return Result<CreateTradeResponse>.Failure(priceResult.Error);
 
+        var quantityResult = Quantity.Create(request.Quantity);
+        if (quantityResult.IsFailure)
+            return Result<CreateTradeResponse>.Failure(quantityResult.Error);
+
         var tradeResult =
             tradeType == TradeType.Buy
-                ? Trade.Buy(tickerResult.Value!, request.Quantity, priceResult.Value!)
-                : Trade.Sell(tickerResult.Value!, request.Quantity, priceResult.Value!);
+                ? Trade.Buy(tickerResult.Value!, quantityResult.Value!, priceResult.Value!)
+                : Trade.Sell(tickerResult.Value!, quantityResult.Value!, priceResult.Value!);
 
         if (tradeResult.IsFailure)
             return Result<CreateTradeResponse>.Failure(tradeResult.Error);
@@ -44,7 +48,7 @@ internal sealed class CreateTradeHandler(ITradeRepository tradeRepository)
         var response = new CreateTradeResponse(
             trade.Id.Value,
             trade.Ticker.Value,
-            trade.Quantity,
+            trade.Quantity.Value,
             trade.Price.Amount,
             trade.Type,
             trade.ExecutedAt

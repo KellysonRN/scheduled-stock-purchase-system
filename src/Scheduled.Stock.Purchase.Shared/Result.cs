@@ -36,9 +36,12 @@ public class Result<T> : Result
         _value = value;
     }
 
-    public T Value => IsSuccess
-        ? _value!
-        : throw new InvalidOperationException("The value of a failure result can not be accessed.");
+    public T Value =>
+        IsSuccess
+            ? _value!
+            : throw new InvalidOperationException(
+                "The value of a failure result can not be accessed."
+            );
 
     public static implicit operator Result<T>(T? value) => Create(value);
 
@@ -46,10 +49,10 @@ public class Result<T> : Result
 
     public static Result<T> Create(T? value)
     {
-        return value is not null ? Success(value) : Failure(default(Error));
+        return value is not null ? Success(value) : Failure(default);
     }
 
     public static Result<T> Success(T value) => new(value, true, Error.None);
 
-    public static Result<T> Failure(Error error) => new(default, false, error);
+    public static new Result<T> Failure(Error? error) => new(default, false, error);
 }

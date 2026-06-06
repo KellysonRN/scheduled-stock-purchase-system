@@ -30,7 +30,7 @@ internal sealed class ListTradesHandler : IHandler<ListTradesRequest, Result<Lis
             .Select(t => new TradeItem(
                 t.Id.Value,
                 t.Ticker.Value,
-                t.Quantity,
+                t.Quantity.Value,
                 t.Price.Amount,
                 t.Type.ToString(),
                 t.ExecutedAt

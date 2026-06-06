@@ -7,22 +7,25 @@ using Scheduled.Stock.Purchase.Shared;
 namespace Scheduled.Stock.Purchase.Api.Features.Trades.DeleteTrade;
 
 internal sealed class DeleteTradeHandler(ITradeRepository tradeRepository)
-    : IHandler<DeleteTradeRequest, Result<Unit>>
+    : IHandler<DeleteTradeRequest, Result<DeleteTradeResponse>>
 {
     private readonly ITradeRepository _tradeRepository = tradeRepository;
 
-    public async Task<Result<Unit>> HandleAsync(
+    public async Task<Result<DeleteTradeResponse>> HandleAsync(
         DeleteTradeRequest request,
         CancellationToken cancellationToken
     )
     {
-        var trade = await _tradeRepository.GetByIdAsync(new TradeId(request.Id), cancellationToken);
+        var trade = await _tradeRepository.GetByIdAsync(
+            TradeId.Create(request.Id).Value,
+            cancellationToken
+        );
 
         if (trade is null)
-            return Result<Unit>.Failure(TradeErrors.NotFound(request.Id));
+            return Result<DeleteTradeResponse>.Failure(TradeErrors.NotFound(request.Id));
 
-        await _tradeRepository.DeleteAsync(new TradeId(request.Id), cancellationToken);
+        await _tradeRepository.DeleteAsync(TradeId.Create(request.Id).Value, cancellationToken);
 
-        return Result<Unit>.Success(Unit.Value);
+        return Result<DeleteTradeResponse>.Success(new DeleteTradeResponse(request.Id));
     }
 }
