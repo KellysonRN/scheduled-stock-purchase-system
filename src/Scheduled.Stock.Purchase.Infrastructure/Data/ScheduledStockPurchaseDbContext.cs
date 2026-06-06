@@ -12,6 +12,7 @@ public sealed class ScheduledStockPurchaseDbContext : DbContext
         : base(options) { }
 
     public DbSet<Trade> Trades { get; set; } = null!;
+
     public DbSet<Client> Clients { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -25,7 +26,7 @@ public sealed class ScheduledStockPurchaseDbContext : DbContext
 
             entity
                 .Property(e => e.Id)
-                .HasConversion(tradeId => tradeId.Value, guid => new TradeId(guid))
+                .HasConversion(tradeId => tradeId.Value, guid => TradeId.Create(guid).Value)
                 .IsRequired();
 
             // Ticker as owned type
@@ -79,7 +80,7 @@ public sealed class ScheduledStockPurchaseDbContext : DbContext
                 e => e.Cpf,
                 o =>
                 {
-                    o.Property(c => c.Value).HasColumnName("Cpf").HasMaxLength(11).IsRequired();
+                    o.Property(c => c.Number).HasColumnName("Cpf").HasMaxLength(11).IsRequired();
                 }
             );
 

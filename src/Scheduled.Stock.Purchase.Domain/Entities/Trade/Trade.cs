@@ -7,7 +7,7 @@ public sealed class Trade : Entity<TradeId>
 {
     public Ticker Ticker { get; private set; } = default!;
 
-    public decimal Quantity { get; private set; }
+    public Quantity Quantity { get; private set; } = default!;
 
     public Money Price { get; private set; } = default!;
 
@@ -20,7 +20,7 @@ public sealed class Trade : Entity<TradeId>
     private Trade(
         TradeId id,
         Ticker ticker,
-        decimal quantity,
+        Quantity quantity,
         Money price,
         TradeType type,
         DateTime executedAt
@@ -34,19 +34,19 @@ public sealed class Trade : Entity<TradeId>
         ExecutedAt = executedAt;
     }
 
-    public static Result<Trade> Buy(Ticker ticker, decimal quantity, Money price)
+    public static Result<Trade> Buy(Ticker ticker, Quantity quantity, Money price)
     {
         return Create(ticker, quantity, price, TradeType.Buy);
     }
 
-    public static Result<Trade> Sell(Ticker ticker, decimal quantity, Money price)
+    public static Result<Trade> Sell(Ticker ticker, Quantity quantity, Money price)
     {
         return Create(ticker, quantity, price, TradeType.Sell);
     }
 
     private static Result<Trade> Create(
         Ticker ticker,
-        decimal quantity,
+        Quantity quantity,
         Money price,
         TradeType type
     )
@@ -54,7 +54,7 @@ public sealed class Trade : Entity<TradeId>
         if (ticker is null)
             return Result<Trade>.Failure(TradeErrors.InvalidTicker);
 
-        if (quantity <= 0)
+        if (quantity is null)
             return Result<Trade>.Failure(TradeErrors.InvalidQuantity);
 
         if (price is null || price.Amount <= 0)

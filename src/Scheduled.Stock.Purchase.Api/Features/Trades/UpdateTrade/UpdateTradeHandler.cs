@@ -20,7 +20,10 @@ internal sealed class UpdateTradeHandler : IHandler<UpdateTradeRequest, Result<U
         CancellationToken cancellationToken
     )
     {
-        var trade = await _tradeRepository.GetByIdAsync(new TradeId(request.Id), cancellationToken);
+        var trade = await _tradeRepository.GetByIdAsync(
+            TradeId.Create(request.Id).Value,
+            cancellationToken
+        );
 
         if (trade is null)
             return Result<UpdateTradeResponse>.Failure(TradeErrors.NotFound(request.Id));
@@ -39,8 +42,8 @@ internal sealed class UpdateTradeHandler : IHandler<UpdateTradeRequest, Result<U
 
         var updatedTrade =
             request.Type.ToUpper() == "BUY"
-                ? Trade.Buy(tickerResult.Value, quantityResult.Value, priceResult.Value)
-                : Trade.Sell(tickerResult.Value, quantityResult.Value, priceResult.Value);
+                ? Trade.Buy(tickerResult.Value, quantityResult.Value, priceResult.Value).Value
+                : Trade.Sell(tickerResult.Value, quantityResult.Value, priceResult.Value).Value;
 
         await _tradeRepository.UpdateAsync(updatedTrade, cancellationToken);
 

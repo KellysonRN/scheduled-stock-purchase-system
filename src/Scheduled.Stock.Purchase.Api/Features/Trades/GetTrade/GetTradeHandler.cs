@@ -16,7 +16,10 @@ internal sealed class GetTradeHandler(ITradeRepository tradeRepository)
         CancellationToken cancellationToken
     )
     {
-        var trade = await _tradeRepository.GetByIdAsync(new TradeId(request.Id), cancellationToken);
+        var trade = await _tradeRepository.GetByIdAsync(
+            TradeId.Create(request.Id).Value,
+            cancellationToken
+        );
 
         if (trade is null)
             return Result<GetTradeResponse>.Failure(TradeErrors.NotFound(request.Id));
