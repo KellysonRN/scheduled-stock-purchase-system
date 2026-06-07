@@ -19,9 +19,9 @@ public class Result
 
     public static Result Success() => new(true, Error.None);
 
-    public static Result Failure(Error error) => new(false, error);
-
     public static Result<TValue> Success<TValue>(TValue value) => Result<TValue>.Success(value);
+
+    public static Result Failure(Error error) => new(false, error);
 
     public static Result<TValue> Failure<TValue>(Error error) => Result<TValue>.Failure(error);
 }
@@ -49,10 +49,10 @@ public class Result<T> : Result
 
     public static Result<T> Create(T? value)
     {
-        return value is not null ? Success(value) : Failure(default);
+        return value is not null ? Success(value) : Failure(Error.None);
     }
 
     public static Result<T> Success(T value) => new(value, true, Error.None);
 
-    public static new Result<T> Failure(Error? error) => new(default, false, error);
+    public static new Result<T> Failure(Error error) => new(default, false, error);
 }

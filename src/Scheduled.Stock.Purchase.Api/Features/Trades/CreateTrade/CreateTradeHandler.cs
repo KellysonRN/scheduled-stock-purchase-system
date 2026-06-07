@@ -35,13 +35,13 @@ internal sealed class CreateTradeHandler(ITradeRepository tradeRepository)
 
         var tradeResult =
             tradeType == TradeType.Buy
-                ? Trade.Buy(tickerResult.Value!, quantityResult.Value!, priceResult.Value!)
-                : Trade.Sell(tickerResult.Value!, quantityResult.Value!, priceResult.Value!);
+                ? Trade.Buy(tickerResult.Value, quantityResult.Value, priceResult.Value)
+                : Trade.Sell(tickerResult.Value, quantityResult.Value, priceResult.Value);
 
         if (tradeResult.IsFailure)
             return Result<CreateTradeResponse>.Failure(tradeResult.Error);
 
-        var trade = tradeResult.Value!;
+        var trade = tradeResult.Value;
 
         await _tradeRepository.AddAsync(trade, cancellationToken);
 

@@ -9,17 +9,22 @@ internal sealed class CreateTradeEndpoint : IApiEndpoint
 {
     public void MapEndpoint(WebApplication app)
     {
-        app.MapPost("/trades", async (
-                IHandler<CreateTradeRequest, Result<CreateTradeResponse>> handler,
-                CreateTradeRequest command,
-                CancellationToken cancellationToken
-            ) =>
-        {
-            var result = await handler.HandleAsync(command, cancellationToken);
-            return result.ToHttpResult(trade => Results.Created($"/trades/{trade.Id}", trade));
-        })
-        .WithTags(ApiTags.Trades)
-        .Produces<CreateTradeResponse>(StatusCodes.Status201Created)
-        .Produces(StatusCodes.Status400BadRequest);
+        app.MapPost(
+                "/trades",
+                async (
+                    IHandler<CreateTradeRequest, Result<CreateTradeResponse>> handler,
+                    CreateTradeRequest command,
+                    CancellationToken cancellationToken
+                ) =>
+                {
+                    var result = await handler.HandleAsync(command, cancellationToken);
+                    return result.ToHttpResult(trade =>
+                        Results.Created($"/trades/{trade.Id}", trade)
+                    );
+                }
+            )
+            .WithTags(ApiTags.Trades)
+            .Produces<CreateTradeResponse>(StatusCodes.Status201Created)
+            .Produces(StatusCodes.Status400BadRequest);
     }
 }
