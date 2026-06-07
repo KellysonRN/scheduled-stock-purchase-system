@@ -5,8 +5,8 @@ namespace Scheduled.Stock.Purchase.Api.Features.Trades.CreateTrade;
 internal sealed class CreateTradeResponse
 {
     public Guid Id { get; init; }
-    public string Ticker { get; init; } = default!;
-    public decimal Quantity { get; init; }
+    public string Ticker { get; init; }
+    public int Quantity { get; init; }
     public decimal Price { get; init; }
     public TradeType Type { get; init; }
     public DateTime ExecutedAt { get; init; }
@@ -14,7 +14,7 @@ internal sealed class CreateTradeResponse
     public CreateTradeResponse(
         Guid id,
         string ticker,
-        decimal quantity,
+        int quantity,
         decimal price,
         TradeType type,
         DateTime executedAt

@@ -1,6 +1,187 @@
-@Scheduled.Stock.Purchase.Api_HostAddress = http://localhost:5082
+################################################################################
+# Scheduled Stock Purchase System
+# REST Client Collection
+#
+# Workflow:
+#   1. Create a trade
+#   2. The generated Id is automatically stored
+#   3. Run Get / Update / Delete without copying anything
+#
+# Requires:
+# - VS Code REST Client Extension
+################################################################################
 
-GET {{Scheduled.Stock.Purchase.Api_HostAddress}}/weatherforecast/
-Accept: application/json
+@host = http://localhost:5000
+# @host = https://localhost:5001
+
+################################################################################
+# CREATE TRADE
+################################################################################
+
+# @name createTrade
+
+POST {{host}}/trades
+Content-Type: application/json
+
+{
+  "ticker": "PETR4",
+  "quantity": 100,
+  "price": 32.50,
+  "type": "BUY"
+}
+
+> {%
+    client.global.set("tradeId", response.body.id);
+    client.log("Trade created successfully.");
+    client.log("TradeId: " + response.body.id);
+%}
 
 ###
+
+################################################################################
+# GET CREATED TRADE
+################################################################################
+
+GET {{host}}/trades/{{tradeId}}
+
+###
+
+################################################################################
+# UPDATE CREATED TRADE
+################################################################################
+
+PUT {{host}}/trades/{{tradeId}}
+Content-Type: application/json
+
+{
+  "ticker": "VALE3",
+  "quantity": 150,
+  "price": 61.80,
+  "type": "SELL"
+}
+
+###
+
+################################################################################
+# VERIFY UPDATED TRADE
+################################################################################
+
+GET {{host}}/trades/{{tradeId}}
+
+###
+
+################################################################################
+# LIST ALL TRADES
+################################################################################
+
+GET {{host}}/trades
+
+###
+
+################################################################################
+# LIST TRADES WITH PAGINATION
+################################################################################
+
+GET {{host}}/trades?pageNumber=1&pageSize=10
+
+###
+
+################################################################################
+# DELETE CREATED TRADE
+################################################################################
+
+DELETE {{host}}/trades/{{tradeId}}
+
+###
+
+################################################################################
+# VERIFY TRADE WAS DELETED
+# Expected: 404 Not Found
+################################################################################
+
+GET {{host}}/trades/{{tradeId}}
+
+###
+
+################################################################################
+# VALIDATION TESTS
+################################################################################
+
+###
+# Invalid ticker
+
+POST {{host}}/trades
+Content-Type: application/json
+
+{
+  "ticker": "",
+  "quantity": 100,
+  "price": 32.50,
+  "type": "BUY"
+}
+
+###
+
+# Invalid quantity
+
+POST {{host}}/trades
+Content-Type: application/json
+
+{
+  "ticker": "PETR4",
+  "quantity": 0,
+  "price": 32.50,
+  "type": "BUY"
+}
+
+###
+
+# Invalid price
+
+POST {{host}}/trades
+Content-Type: application/json
+
+{
+  "ticker": "PETR4",
+  "quantity": 100,
+  "price": 0,
+  "type": "BUY"
+}
+
+###
+
+# Invalid trade type
+
+POST {{host}}/trades
+Content-Type: application/json
+
+{
+  "ticker": "PETR4",
+  "quantity": 100,
+  "price": 32.50,
+  "type": "INVALID"
+}
+
+###
+
+################################################################################
+# NOT FOUND SCENARIOS
+################################################################################
+
+GET {{host}}/trades/11111111-1111-1111-1111-111111111111
+
+###
+
+PUT {{host}}/trades/11111111-1111-1111-1111-111111111111
+Content-Type: application/json
+
+{
+  "ticker": "PETR4",
+  "quantity": 10,
+  "price": 20.00,
+  "type": "BUY"
+}
+
+###
+
+DELETE {{host}}/trades/11111111-1111-1111-1111-111111111111

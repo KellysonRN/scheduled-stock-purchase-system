@@ -9,4 +9,9 @@ public static class TradeErrors
     public static readonly Error InvalidQuantity = new("Trade.InvalidQuantity", "Invalid quantity");
 
     public static readonly Error InvalidPrice = new("Trade.InvalidPrice", "Invalid price");
+
+    public static Error NotFound(Guid id)
+    {
+        return new("Trade.NotFound", $"Trade with ID {id} not found");
+    }
 }
